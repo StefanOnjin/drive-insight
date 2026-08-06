@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: drive-insight-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: drive_insight
+      POSTGRES_USER: drive_insight
+      POSTGRES_PASSWORD: drive_insight
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

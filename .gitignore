@@ -1,0 +1,15 @@
+# Visual Studio
+.vs/
+*.user
+
+# .NET
+bin/
+obj/
+
+# Local planning notes
+docs/
+
+*.Development.local.json
+.env
+Thumbs.db
+.DS_Store
