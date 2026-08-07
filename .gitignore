@@ -6,6 +6,10 @@
 bin/
 obj/
 
+# Python
+__pycache__/
+*.pyc
+
 # Local planning notes
 docs/
 
