@@ -197,7 +197,7 @@ public class DriveService : IDriveService
                     Timestamp = reading.Timestamp,
                     Latitude = reading.Latitude,
                     Longitude = reading.Longitude,
-                    SpeedKmh = reading.SpeedMps * 3.6
+                    SpeedKmh = reading.SpeedMps is null ? null : Math.Round(reading.SpeedMps.Value * 3.6, 2)
                 })
                 .ToList(),
             Analysis = drive.Analysis is null ? null : new DriveAnalysisResponse
