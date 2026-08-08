@@ -21,12 +21,15 @@ public interface IDriveService
 public class DriveService : IDriveService
 {
     private static readonly Guid DemoUserId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private const double MaxGpsAccuracyMeters = 50;
 
     private readonly DriveInsightDbContext dbContext;
+    private readonly IDriveAnalysisService driveAnalysisService;
 
-    public DriveService(DriveInsightDbContext dbContext)
+    public DriveService(DriveInsightDbContext dbContext, IDriveAnalysisService driveAnalysisService)
     {
         this.dbContext = dbContext;
+        this.driveAnalysisService = driveAnalysisService;
     }
 
     public async Task<CreateDriveResponse> CreateDriveAsync(CreateDriveRequest request, CancellationToken cancellationToken)
@@ -118,7 +121,10 @@ public class DriveService : IDriveService
 
     public async Task<FinishDriveResponse> FinishDriveAsync(Guid driveId, FinishDriveRequest request, CancellationToken cancellationToken)
     {
-        var drive = await dbContext.Drives.FirstOrDefaultAsync(drive => drive.Id == driveId, cancellationToken);
+        var drive = await dbContext.Drives
+            .Include(drive => drive.GpsReadings)
+            .Include(drive => drive.MotionReadings)
+            .FirstOrDefaultAsync(drive => drive.Id == driveId, cancellationToken);
         if (drive is null)
         {
             throw new DriveServiceException(DriveServiceError.NotFound, "Drive was not found.");
@@ -138,13 +144,22 @@ public class DriveService : IDriveService
         drive.EndedAt = endedAt;
         drive.Status = DriveStatus.Completed;
 
+        var analysisResult = driveAnalysisService.Analyze(
+            drive,
+            drive.GpsReadings,
+            drive.MotionReadings,
+            DateTimeOffset.UtcNow);
+
+        dbContext.DriveAnalyses.Add(analysisResult.Analysis);
+        dbContext.DetectedEvents.AddRange(analysisResult.Events);
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new FinishDriveResponse
         {
             DriveId = drive.Id,
             Status = ToApiStatus(drive.Status),
-            AnalysisStatus = "not_started"
+            AnalysisStatus = "completed"
         };
     }
 
@@ -191,6 +206,7 @@ public class DriveService : IDriveService
             EndedAt = drive.EndedAt,
             Status = ToApiStatus(drive.Status),
             Route = drive.GpsReadings
+                .Where(IsUsableGpsReading)
                 .OrderBy(reading => reading.Timestamp)
                 .Select(reading => new RoutePointResponse
                 {
@@ -296,6 +312,11 @@ public class DriveService : IDriveService
         EventSeverity.High => "high",
         _ => severity.ToString()
     };
+
+    private static bool IsUsableGpsReading(GpsReading reading)
+    {
+        return reading.AccuracyMeters is null || reading.AccuracyMeters <= MaxGpsAccuracyMeters;
+    }
 }
 
 public class DriveServiceException : Exception

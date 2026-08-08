@@ -9,6 +9,7 @@ obj/
 # Python
 __pycache__/
 *.pyc
+tools/
 
 # Local planning notes
 docs/
