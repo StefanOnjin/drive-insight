@@ -90,6 +90,8 @@ public class DriveListItemResponse
     public double? MaxSpeedKmh { get; set; }
 
     public int? Score { get; set; }
+
+    public int EventCount { get; set; }
 }
 
 public class DriveDetailResponse

@@ -181,7 +181,10 @@ public class DriveService : IDriveService
             DistanceMeters = drive.Analysis?.DistanceMeters,
             AverageSpeedKmh = drive.Analysis?.AverageSpeedKmh,
             MaxSpeedKmh = drive.Analysis?.MaxSpeedKmh,
-            Score = drive.Analysis?.Score
+            Score = drive.Analysis?.Score,
+            EventCount = drive.Analysis is null
+                ? 0
+                : drive.Analysis.HarshAccelerationCount + drive.Analysis.HarshBrakingCount + drive.Analysis.SharpTurnCount
         }).ToList();
     }
 
