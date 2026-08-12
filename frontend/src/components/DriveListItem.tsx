@@ -11,15 +11,14 @@ import {
 
 type DriveListItemProps = {
   drive: DriveListItemType
-  isSelected: boolean
   onSelect: (driveId: string) => void
 }
 
-export function DriveListItem({ drive, isSelected, onSelect }: DriveListItemProps) {
+export function DriveListItem({ drive, onSelect }: DriveListItemProps) {
   const scoreClassName = getScoreClassName(drive.score)
 
   return (
-    <article className={`drive-row${isSelected ? ' drive-row-selected' : ''}`}>
+    <article className="drive-row">
       <div className="drive-row-main">
         <div>
           <h2>{formatDateTime(drive.startedAt)}</h2>
@@ -51,7 +50,7 @@ export function DriveListItem({ drive, isSelected, onSelect }: DriveListItemProp
         </div>
       </dl>
       <button type="button" className="drive-select-button" onClick={() => onSelect(drive.driveId)}>
-        View details
+        Open details
       </button>
     </article>
   )

@@ -4,19 +4,13 @@ import { DriveListItem } from './DriveListItem'
 type DriveListProps = {
   drives: DriveListItemType[]
   onSelectDrive: (driveId: string) => void
-  selectedDriveId: string | null
 }
 
-export function DriveList({ drives, onSelectDrive, selectedDriveId }: DriveListProps) {
+export function DriveList({ drives, onSelectDrive }: DriveListProps) {
   return (
     <div className="drive-list">
       {drives.map((drive) => (
-        <DriveListItem
-          key={drive.driveId}
-          drive={drive}
-          isSelected={drive.driveId === selectedDriveId}
-          onSelect={onSelectDrive}
-        />
+        <DriveListItem key={drive.driveId} drive={drive} onSelect={onSelectDrive} />
       ))}
     </div>
   )
