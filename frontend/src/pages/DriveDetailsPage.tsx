@@ -3,6 +3,7 @@ import { getDriveById } from '../api/driveApi'
 import { DriveMap } from '../components/DriveMap'
 import { ErrorState } from '../components/ErrorState'
 import { LoadingState } from '../components/LoadingState'
+import { SpeedChart } from '../components/SpeedChart'
 import type { DriveDetail } from '../types/drive'
 import {
   formatDateTime,
@@ -181,13 +182,7 @@ export function DriveDetailsPage({ driveId, onBack }: DriveDetailsPageProps) {
         )}
       </section>
 
-      <section className="chart-placeholder">
-        <div>
-          <p className="eyebrow">Speed chart</p>
-          <strong>SPEED OVER TIME</strong>
-          <p>TO DO</p>
-        </div>
-      </section>
+      <SpeedChart route={drive.route} />
     </>
   )
 }
