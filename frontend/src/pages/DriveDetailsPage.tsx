@@ -11,7 +11,6 @@ import {
   formatDuration,
   formatEventType,
   formatEventValue,
-  formatScore,
   formatSpeed,
   formatStatus,
   getScoreClassName,
@@ -85,22 +84,34 @@ export function DriveDetailsPage({ driveId, onBack }: DriveDetailsPageProps) {
   const analysis = drive.analysis
 
   return (
-    <>
+    <div className="details-page">
       <header className="details-header">
-        <button type="button" className="ghost-button" onClick={onBack}>
-          Back to drives
-        </button>
-        <div className="details-title-row">
-          <div>
-            <p className="eyebrow">Drive details</p>
-            <h1>{formatDateTime(drive.startedAt)}</h1>
-          </div>
+        <div className="details-navigation">
+          <button type="button" className="ghost-button" onClick={onBack}>
+            <span aria-hidden="true">&larr;</span>
+            Back to drives
+          </button>
           <span className={`status-badge status-${drive.status}`}>{formatStatus(drive.status)}</span>
         </div>
+
+        <div className="details-title-row">
+          <p className="eyebrow">Drive details</p>
+          <h1>{formatDateTime(drive.startedAt)}</h1>
+        </div>
+
         <div className="details-meta">
-          <span>Started {formatDateTime(drive.startedAt)}</span>
-          <span>{drive.endedAt ? `Ended ${formatDateTime(drive.endedAt)}` : 'Recording in progress'}</span>
-          <span>{drive.route.length} route points</span>
+          <div>
+            <span>Started</span>
+            <strong>{formatDateTime(drive.startedAt)}</strong>
+          </div>
+          <div>
+            <span>Ended</span>
+            <strong>{drive.endedAt ? formatDateTime(drive.endedAt) : 'Recording in progress'}</strong>
+          </div>
+          <div>
+            <span>Route data</span>
+            <strong>{drive.route.length} GPS points</strong>
+          </div>
         </div>
       </header>
 
@@ -112,11 +123,14 @@ export function DriveDetailsPage({ driveId, onBack }: DriveDetailsPageProps) {
           <p>This drive has not been analyzed.</p>
         </div>
       ) : (
-        <section className="details-section">
+        <section className="analysis-overview" aria-label="Drive analysis overview">
           <div className="score-panel">
             <div>
               <p className="eyebrow">Driving score</p>
-              <strong className={getScoreClassName(analysis.score)}>{formatScore(analysis.score)}</strong>
+              <div className="score-value">
+                <strong className={getScoreClassName(analysis.score)}>{analysis.score}</strong>
+                <span>/100</span>
+              </div>
             </div>
             <p>{analysis.summary ?? 'No summary available.'}</p>
           </div>
@@ -140,8 +154,19 @@ export function DriveDetailsPage({ driveId, onBack }: DriveDetailsPageProps) {
             </div>
           </dl>
 
-          <section>
-            <h2>Event breakdown</h2>
+        </section>
+      )}
+
+      <div className={`details-grid${analysis === null ? ' details-grid-single' : ''}`}>
+        {analysis !== null && (
+          <section className="details-section">
+            <div className="content-section-header">
+              <div>
+                <p className="eyebrow">Analysis</p>
+                <h2>Event breakdown</h2>
+              </div>
+              <span>{drive.events.length} detected</span>
+            </div>
             <dl className="event-breakdown">
               <div>
                 <dt>Harsh acceleration</dt>
@@ -157,33 +182,38 @@ export function DriveDetailsPage({ driveId, onBack }: DriveDetailsPageProps) {
               </div>
             </dl>
           </section>
-        </section>
-      )}
-
-      <section className="details-section">
-        <h2>Detected events</h2>
-        {drive.events.length === 0 ? (
-          <p className="muted-text">No detected events for this drive.</p>
-        ) : (
-          <div className="event-list">
-            {drive.events.map((event) => (
-              <article className="event-row" key={`${event.type}-${event.timestamp}`}>
-                <div>
-                  <strong>{formatEventType(event.type)}</strong>
-                  <p>{formatDateTime(event.timestamp)}</p>
-                </div>
-                <div className="event-row-meta">
-                  <span className={`severity-badge severity-${event.severity}`}>{event.severity}</span>
-                  <span>{formatEventValue(event.value)}</span>
-                </div>
-              </article>
-            ))}
-          </div>
         )}
-      </section>
+
+        <section className="details-section">
+          <div className="content-section-header">
+            <div>
+              <p className="eyebrow">Timeline</p>
+              <h2>Detected events</h2>
+            </div>
+          </div>
+          {drive.events.length === 0 ? (
+            <p className="muted-text">No detected events for this drive.</p>
+          ) : (
+            <div className="event-list">
+              {drive.events.map((event) => (
+                <article className="event-row" key={`${event.type}-${event.timestamp}`}>
+                  <div>
+                    <strong>{formatEventType(event.type)}</strong>
+                    <p>{formatDateTime(event.timestamp)}</p>
+                  </div>
+                  <div className="event-row-meta">
+                    <span className={`severity-badge severity-${event.severity}`}>{event.severity}</span>
+                    <span>{formatEventValue(event.value)}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
 
       <SpeedChart route={drive.route} />
-    </>
+    </div>
   )
 }
 
@@ -195,6 +225,7 @@ function PageHeader({ onBack }: PageHeaderProps) {
   return (
     <header className="details-header">
       <button type="button" className="ghost-button" onClick={onBack}>
+        <span aria-hidden="true">&larr;</span>
         Back to drives
       </button>
       <div>

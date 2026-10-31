@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getDrives } from '../api/driveApi'
 import { DriveList } from '../components/DriveList'
+import { DriveOverview } from '../components/DriveOverview'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorState } from '../components/ErrorState'
 import { LoadingState } from '../components/LoadingState'
@@ -41,18 +42,29 @@ export function DriveListPage({ onSelectDrive }: DriveListPageProps) {
   }, [])
 
   return (
-    <>
+    <div className="dashboard-page">
       <header className="app-header">
         <div>
           <p className="eyebrow">Drive Insight</p>
           <h1>Drive history</h1>
+          <p className="header-meta">All recorded drives</p>
         </div>
-        <button type="button" className="secondary-button" onClick={loadDrives}>
-          Refresh
+        <button type="button" className="secondary-button" onClick={loadDrives} disabled={isLoading}>
+          {isLoading ? 'Refreshing...' : 'Refresh data'}
         </button>
       </header>
 
-      <section aria-label="Drive list">
+      {!isLoading && !errorMessage && drives.length > 0 && <DriveOverview drives={drives} />}
+
+      <section className="drive-history-section" aria-label="Drive list">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">History</p>
+            <h2>Recent drives</h2>
+          </div>
+          {!isLoading && !errorMessage && <span>{drives.length} total</span>}
+        </div>
+
         {isLoading && <LoadingState />}
         {!isLoading && errorMessage && <ErrorState message={errorMessage} onRetry={loadDrives} />}
         {!isLoading && !errorMessage && drives.length === 0 && <EmptyState />}
@@ -60,6 +72,6 @@ export function DriveListPage({ onSelectDrive }: DriveListPageProps) {
           <DriveList drives={drives} onSelectDrive={onSelectDrive} />
         )}
       </section>
-    </>
+    </div>
   )
 }

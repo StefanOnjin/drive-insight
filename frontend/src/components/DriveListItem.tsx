@@ -20,38 +20,41 @@ export function DriveListItem({ drive, onSelect }: DriveListItemProps) {
   return (
     <article className="drive-row">
       <div className="drive-row-main">
-        <div>
-          <h2>{formatDateTime(drive.startedAt)}</h2>
-          <p>{drive.endedAt ? formatDuration(drive.durationSeconds) : 'Recording in progress'}</p>
-        </div>
-        <span className={`status-badge status-${drive.status}`}>{formatStatus(drive.status)}</span>
+        <h3>{formatDateTime(drive.startedAt)}</h3>
+        <p>{drive.endedAt ? formatDuration(drive.durationSeconds) : 'Recording in progress'}</p>
       </div>
 
-      <dl className="drive-metrics">
-        <div>
-          <dt>Distance</dt>
-          <dd>{formatDistance(drive.distanceMeters)}</dd>
-        </div>
-        <div>
-          <dt>Avg speed</dt>
-          <dd>{formatSpeed(drive.averageSpeedKmh)}</dd>
-        </div>
-        <div>
-          <dt>Max speed</dt>
-          <dd>{formatSpeed(drive.maxSpeedKmh)}</dd>
-        </div>
-        <div>
-          <dt>Events</dt>
-          <dd>{drive.eventCount}</dd>
-        </div>
-        <div>
-          <dt>Score</dt>
-          <dd className={scoreClassName}>{formatScore(drive.score)}</dd>
-        </div>
-      </dl>
-      <button type="button" className="drive-select-button" onClick={() => onSelect(drive.driveId)}>
-        Open details
+      <div className="drive-table-cell drive-status-cell" data-label="Status">
+        <span className={`status-badge status-${drive.status}`}>{formatStatus(drive.status)}</span>
+      </div>
+      <DriveValue label="Distance" value={formatDistance(drive.distanceMeters)} />
+      <DriveValue label="Avg speed" value={formatSpeed(drive.averageSpeedKmh)} />
+      <DriveValue label="Max speed" value={formatSpeed(drive.maxSpeedKmh)} />
+      <DriveValue label="Events" value={drive.eventCount.toString()} />
+      <div className="drive-table-cell score-cell" data-label="Score">
+        <strong className={scoreClassName}>{formatScore(drive.score)}</strong>
+      </div>
+      <button
+        type="button"
+        className="drive-select-button"
+        onClick={() => onSelect(drive.driveId)}
+        aria-label={`Open drive from ${formatDateTime(drive.startedAt)}`}
+      >
+        View
       </button>
     </article>
+  )
+}
+
+type DriveValueProps = {
+  label: string
+  value: string
+}
+
+function DriveValue({ label, value }: DriveValueProps) {
+  return (
+    <div className="drive-table-cell" data-label={label}>
+      <span>{value}</span>
+    </div>
   )
 }

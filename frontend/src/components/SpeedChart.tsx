@@ -42,10 +42,10 @@ export function SpeedChart({ route }: SpeedChartProps) {
   }
 
   return (
-    <section className="chart-section">
-      <div className="chart-header">
+    <section className="chart-section" aria-label="Speed over time chart">
+      <div className="content-section-header">
         <div>
-          <p className="eyebrow">Speed chart</p>
+          <p className="eyebrow">Telemetry</p>
           <h2>Speed over time</h2>
         </div>
         <span>{chartData.length} samples</span>
@@ -54,8 +54,9 @@ export function SpeedChart({ route }: SpeedChartProps) {
       <div className="speed-chart">
         <ResponsiveContainer height="100%" width="100%">
           <LineChart data={chartData} margin={{ bottom: 4, left: 8, right: 16, top: 12 }}>
-            <CartesianGrid stroke="#dde2e8" strokeDasharray="4 4" />
+            <CartesianGrid stroke="#e5e9ee" vertical={false} />
             <XAxis
+              axisLine={false}
               dataKey="label"
               minTickGap={28}
               stroke="#647084"
@@ -63,6 +64,7 @@ export function SpeedChart({ route }: SpeedChartProps) {
               tickLine={false}
             />
             <YAxis
+              axisLine={false}
               stroke="#647084"
               tick={{ fontSize: 12 }}
               tickFormatter={(value) => `${value}`}
@@ -70,9 +72,9 @@ export function SpeedChart({ route }: SpeedChartProps) {
               unit=" km/h"
               width={72}
             />
-            <Tooltip content={<SpeedTooltip />} />
+            <Tooltip content={<SpeedTooltip />} cursor={{ stroke: '#9aa6b5', strokeDasharray: '4 4' }} />
             <Line
-              activeDot={{ r: 5 }}
+              activeDot={{ fill: '#ffffff', r: 5, stroke: '#2563eb', strokeWidth: 3 }}
               dataKey="speedKmh"
               dot={false}
               name="Speed"
