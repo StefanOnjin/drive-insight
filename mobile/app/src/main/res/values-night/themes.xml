@@ -6,7 +6,7 @@
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="android:colorAccent">@color/accent_yellow</item>
         <item name="android:fontFamily">sans</item>
-        <item name="android:navigationBarColor">@color/app_surface</item>
+        <item name="android:navigationBarColor">@color/app_background</item>
         <item name="android:statusBarColor">@color/app_background</item>
         <item name="android:windowBackground">@color/app_background</item>
         <item name="android:windowLightNavigationBar">false</item>
