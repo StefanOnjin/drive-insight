@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_nav_graph"
+    app:startDestination="@id/recordFragment">
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.driveinsight.mobile.ui.history.HistoryFragment"
+        android:label="@string/nav_history"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/recordFragment"
+        android:name="com.driveinsight.mobile.ui.record.RecordFragment"
+        android:label="@string/nav_record"
+        tools:layout="@layout/fragment_record" />
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.driveinsight.mobile.ui.chat.ChatFragment"
+        android:label="@string/nav_chat"
+        tools:layout="@layout/fragment_chat" />
+</navigation>
